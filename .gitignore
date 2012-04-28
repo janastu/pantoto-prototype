@@ -1,3 +1,5 @@
 #These are the list of files which have to to be ignored when doing a commit.  git should not track these files.
+#vim/vi users add your swp file here.
 *.obj
 *.pyc
+*.*~
