@@ -1,0 +1,576 @@
+=============
+Exam Workflow
+=============
+
+.. The above is the document title
+
+.. -*- coding: utf-8 -*-
+
+.. contents:: Table of Contents
+.. section-numbering::
+
+
+.. role:: ci
+   :class: code-inline
+
+
+
+Defining the exam workflow
+==========================
+
+The exam workflow, introduced in the pantoto core
+documentation and discussed in detail, is specified as a set
+of states, events, and transitions (moves).
+
+Each event is in terms of a send and receive action.  For
+example, the teacher sends the exam paper, and the student
+receives (or gets) the exam paper.  These two complementary
+events are sequential (the send precedes the receive) and
+asynchronous.  It's possible to define a different workflow
+in which the sends and receives are synchronous.
+
+
+Users
+-----
+
+::
+
+
+  (define student (new-user 'student))
+  (define teacher (new-user 'teacher))
+
+
+
+Exam workflow specified informally
+----------------------------------
+
+The states, actions and transitions are captured by the
+following table each of whose rows has the format.
+
+::
+
+
+    (move <state> <action> => <next-state>)
+
+Each state name is a composite indicating the student's
+state (ready, writing, waiting, done) and the teacher's
+state (setting, waiting, grading, done). 
+
+
+::
+
+  ; (move ready-setting   send-paper)     => ready-waiting
+  ; (move ready-waiting   get-paper)      => writing-waiting
+  ; (move writing-waiting send-answer)    => waiting-waiting
+  ; (move waiting-waiting get-answer)     => waiting-grading
+  ; (move waiting-grading send-grade)     => waiting-done
+  ; (move waiting-done    get-grade)      => done-done
+
+
+States
+------
+
+::
+
+
+  (define ready-setting   (new-state 'ready-setting))
+  (define ready-waiting   (new-state 'ready-waiting))
+  (define writing-waiting (new-state 'writing-waiting))
+  (define waiting-waiting (new-state 'waiting-waiting))
+  (define waiting-grading (new-state 'waiting-grading))
+  (define waiting-done    (new-state 'waiting-done))
+  (define done-done       (new-state 'done-done))
+
+  (define *states*
+    (list
+      ready-setting    
+      ready-waiting    
+      writing-waiting  
+      waiting-waiting  
+      waiting-grading
+      waiting-done
+      done-done))
+
+Actions
+-------
+
+::
+
+
+  (define send-paper  (new-action 'send-paper))
+  (define send-answer (new-action 'send-answer))
+  (define send-grade  (new-action 'send-grade))
+
+  (define get-paper   (new-action 'get-paper))
+  (define get-answer  (new-action 'get-answer))
+  (define get-grade   (new-action 'get-grade))
+
+  (define *actions*
+    (list
+      send-paper
+      send-answer
+      send-grade
+
+      get-paper
+      get-answer
+      get-grade))
+
+
+Pagelets and Fields
+-------------------
+
+::
+
+
+  (define paper  (new-pagelet 'paper))
+
+  (define question (new-field 'question "Mauritius capital?"))
+  (define answer  (new-field  'answer   "blank"))
+  (define grade   (new-field  'grade    "blank"))
+
+
+
+
+
+Defining hooks with transitions
+-------------------------------
+
+The :ci:`define-move` function constructs a move and the work
+flow with the new move.  Its syntax is
+
+::
+
+        (define-move <state> <action> <new-state> <hook>)
+
+:ci:`hook` is a thunk (zero argument function)
+which can be used for doing anything.  Here the hook is used
+for updating the views of various pagelets in the system.
+It is also used for registering fields into the system's
+list of fields.
+
+::
+
+
+
+  (define-move
+    ready-setting  send-paper ;; =>
+    ready-waiting
+    (lambda ()
+      ;; update the teacher's view of the question to read-only
+      (update-field-view! teacher paper question ro)))
+
+  (define-move
+    ready-waiting get-paper ;; =>
+    writing-waiting
+    (lambda ()
+      (add-field! answer)
+
+      ;; student can (only) read  question 
+      (update-field-view! student paper question ro)
+
+      ;; student can write into answer field
+      (update-field-view! student paper answer rw)))
+
+  (define-move
+    writing-waiting send-answer ;; =>
+    waiting-waiting  
+    (lambda ()
+      ;; student done answering, answer field no longer writable
+      (update-field-view! student paper answer ro)))
+
+  (define-move
+    waiting-waiting get-answer  ;; =>
+    waiting-grading
+    (lambda ()
+      (add-field! grade)
+
+      ;; teacher receives answer which is read only
+      (update-field-view! teacher paper answer ro)
+
+      ;; The grade field is writable by the teacher
+      (update-field-view! teacher paper grade rw)))
+
+  (define-move
+    waiting-grading send-grade ;; =>
+    waiting-done  
+    (lambda ()
+      ;; Teacher sends grade.  Grade field no longer writable.
+      (update-field-view! teacher paper grade ro)))
+
+
+  (define-move
+    waiting-done get-grade  ;; =>
+    done-done
+    (lambda ()
+
+      ;; Grade visible to student (read only)
+      (update-field-view! student paper grade ro)))
+
+
+:ci:`update-field-view!` updates the view *of* a field *in* a
+pagelet *for* a user.
+
+
+Initializing the exam work flow
+===============================
+
+Initializing the work flow involves registering the users
+and pagelets and the fields into the workflow, setting the
+current state of the workflow, and initializing the view of
+pagelets.
+
+::
+
+
+  (define start-workflow!
+    read-setting
+    (lambda ()
+      (add-user! student)
+      (add-user! teacher)
+      (add-pagelet! paper)
+      (add-field! question)
+      (update-field-view! teacher paper question rw)))
+
+
+
+Running the exam workflow
+=========================
+
+
+First, we start the scheme session in the exam directory and
+import the module main.ss.
+
+::
+
+
+        Welcome to MzScheme v4.2 [3m], Copyright (c) 2004-2009 PLT Scheme Inc.
+        > (require "main.ss")
+        
+
+
+Listing all pagelets
+--------------------
+
+At any instance, :ci:`(list-all)` lists all the fields of
+all pagelets for each user of the system.
+:ci:`(list-pager-for-user <user>)` lists all pagelets and
+their fields and views for a particular user.
+
+::
+
+
+        > (list-all)
+        ((user:
+          teacher
+          pagelets:
+            ((pagelet: paper
+              fields:
+                ((name: question perm: "rw" content: "Mauritius capital?")))))
+         (user: student pagelets: ()))
+
+
+Initially, the system has two users.  The teacher is still
+in the process of setting the question paper.  That is
+indicated by the quesion field being rw. 
+
+Sending and getting the paper
+-----------------------------
+
+The paper is next sent using the :ci:`send-paper` event.
+The send and receive are asynchronous.  So there is a
+:ci:`get-paper` event to match the send.
+
+::
+
+
+  > (next-state send-paper)
+  > (next-state get-paper)
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: question perm: "r-" content: "Mauritius capital?")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "rw" content: "blank")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+        
+
+In the teacher's view, the paper only contains the question,
+now read-only.  The student's view of the paper has an
+additional field, the answer.  The student writes the answer
+in the writable answer field.
+
+
+Attempt to change the question by the teacher
+---------------------------------------------
+
+The teacher has second thoughts on the question and tries to
+change the question, but fails.
+
+
+::
+
+
+  > (set-content! teacher paper question "Sri Lanka capital?")
+  set-content!: field question of pagelet paper is visible to user teacher 
+  but is not writable
+
+
+Notice that :ci:`set-content!` of a field to a new content
+value is invoked in the context of a user and a pagelet.
+The assumption here is that both the pagelet paper is
+available to the user and the question field is available
+and writable to the paper pagelet.  If not the system issues
+an error (not shown).
+
+
+
+
+Student answers the question
+----------------------------
+
+
+The students answers the question by setting the content of the answer field. 
+
+::
+
+
+  > (set-content! student paper answer "St. Louis")
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: question perm: "r-" content: "Mauritius capital?")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "rw" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+
+
+The student isn't finished with writing the answer yet, so
+the answer field is still writable.
+
+
+Student finishes the exam
+-------------------------
+
+
+The student finishes the exam.  This is indicated in the
+workflow by calling the :ci:`next-state` function with the
+action :ci:`send-answer`.
+
+The answer field is no longer writable. 
+
+::
+
+
+  > (next-state send-answer)
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: question perm: "r-" content: "Mauritius capital?")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+
+
+
+Student tries to change the answer 
+-----------------------------------
+
+As soon as the student submits the answer, he remembers that
+the correct answer is *Port Louis*, not St. Louis.  He tries
+to change it, but it's too late.
+
+
+::
+
+
+  > (set-content! student paper answer "Port Louis")
+  set-content!: field answer of pagelet paper is visible 
+  to user student but is not writable
+
+
+
+Teacher gets the answer
+-----------------------
+
+At this point the teacher sees the student's answer.  Aa
+grade field initialized to *blank* also appears in the
+teacher's view of the paper.
+
+::
+
+
+  > (next-state get-answer)
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?")
+       (name: grade perm: "rw" content: "blank")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+
+
+
+Teachers sets the grade
+-----------------------
+
+The teacher sets the grade (to "F").  This is reflected in
+the new content of the grade field. 
+
+::
+
+
+  > (set-content! teacher paper grade "F")
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?")
+       (name: grade perm: "rw" content: "F")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+
+
+Teacher sends the grade
+-----------------------
+
+As soon as the teacher sends the grade, the grade field is no longer writable. 
+
+::
+
+
+  > (next-state send-grade)
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?")
+       (name: grade perm: "r-" content: "F")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?"))))))
+
+
+
+Student receives the grade
+--------------------------
+
+
+After the :ci:`get-grade` action, the student can view his grade. 
+
+::
+
+
+  > (next-state get-grade)
+  > (list-all)
+  ((user:
+    teacher
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?")
+       (name: grade perm: "r-" content: "F")))))
+   (user:
+    student
+    pagelets:
+    ((pagelet:
+      paper
+      fields:
+      ((name: answer perm: "r-" content: "St. Louis")
+       (name: question perm: "r-" content: "Mauritius capital?")
+       (name: grade perm: "r-" content: "F"))))))
+
+
+Actions must match the work flow
+--------------------------------
+
+At this point, current state of the system is
+:ci:`done-done`.  Another call to change to the next state
+on the :ci:`send-answer` action results in an exception
+because this transition (or any other) from the
+:ci:`done-done state` is not defined as part of the
+workflow.
+
+::
+
+
+  > (next-state send-answer)
+  next-state: no transition from  state done-done on action send-answer
+
+
+Listing the state variables
+---------------------------
+
+The names of users, pagelets and fields in the system can be
+listed.  
+
+::
+
+
+  > (user-names)
+  (teacher student)
+  > (pagelet-names)
+  (paper)
+  > (field-names)
+  (grade answer question)
+  > (state-name *current-state*)
+  done-done
+

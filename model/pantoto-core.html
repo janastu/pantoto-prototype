@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>A model for Pantoto core</title>
+<style type="text/css">
+
+/* Geometry */
+
+body { 
+	margin-left: 20%; 
+	margin-right: 25%; 
+	margin-top: 10%;
+        background: #ffffff; 
+        color: #444444;
+        font-family: Verdana, sans-serif; 
+        font-weight: normal;
+}
+
+.admonition-title {
+/*   display: none ; */
+ color: blue;
+ margin-left: 5%;
+}
+
+div.design-note {
+   border: solid;
+   font-size: small;
+   border-width: thin;
+   width: 100%;
+   background: "FFFF66";
+}
+
+span.code-inline {
+   color: green;
+   font-family: helvetica, monospace;
+   font-weight: bold;
+   font-size: small;
+}
+
+
+h1, h2, h3 { color: navy;}
+  margin-left: 3em;
+}
+
+
+div.section-title {
+   margin-top: 30%;
+   text-align: center;
+   line-height: 280%;
+/*   vertical-align: middle;*/
+}
+
+table {
+ border: thin solid silver;
+}
+
+/* Links */
+
+a:link {
+   text-decoration: none;
+   color: #996633; /* brown */
+}
+
+a:visited {
+   text-decoration: none;
+   color: #996633; /* brown */
+}
+
+a:hover {
+   text-decoration: none;
+   color: #cc9966; 
+}
+
+li {
+
+   padding: 5px;
+}
+
+table {
+ border: thin solid silver;
+}
+
+
+th {
+   padding: 1em;
+   background: #CCCC33;
+}
+
+td {
+   padding: 0.5em;
+   font-size: 75%;
+}
+
+.literal-block {
+   font-weight: bold;
+   font-size: small;
+   color: green;
+   font-family: monospace, fixed-width;
+
+}
+</style>
+</head>
+<body>
+<div class="document" id="a-model-for-pantoto-core">
+<h1 class="title">A model for Pantoto core</h1>
+
+<!-- The above is the document title -->
+<!-- -*- coding: utf-8 -*- -->
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title first">Table of Contents</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#introduction" id="id2">1&nbsp;&nbsp;&nbsp;Introduction</a><ul class="auto-toc">
+<li><a class="reference internal" href="#motivation-and-objective" id="id3">1.1&nbsp;&nbsp;&nbsp;Motivation and objective</a></li>
+<li><a class="reference internal" href="#core-elements" id="id4">1.2&nbsp;&nbsp;&nbsp;Core Elements</a></li>
+<li><a class="reference internal" href="#work-flow-driven-evolution-of-pagelet-views" id="id5">1.3&nbsp;&nbsp;&nbsp;Work flow driven evolution of pagelet views</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#type-structure" id="id6">2&nbsp;&nbsp;&nbsp;Type structure</a></li>
+<li><a class="reference internal" href="#dynamics" id="id7">3&nbsp;&nbsp;&nbsp;Dynamics</a></li>
+<li><a class="reference internal" href="#examples" id="id8">4&nbsp;&nbsp;&nbsp;Examples:</a><ul class="auto-toc">
+<li><a class="reference internal" href="#exam-paper-and-grading" id="id9">4.1&nbsp;&nbsp;&nbsp;Exam paper and grading</a><ul class="auto-toc">
+<li><a class="reference internal" href="#initial-state-of-the-system" id="id10">4.1.1&nbsp;&nbsp;&nbsp;Initial state of the system:</a></li>
+<li><a class="reference internal" href="#after-student-receives-the-examination-paper-paper-event" id="id11">4.1.2&nbsp;&nbsp;&nbsp;After student receives the examination  paper (paper event):</a></li>
+<li><a class="reference internal" href="#after-the-student-submits-the-paper-submit-event" id="id12">4.1.3&nbsp;&nbsp;&nbsp;After the student submits the paper (submit event):</a></li>
+<li><a class="reference internal" href="#after-the-paper-is-graded-grade-event" id="id13">4.1.4&nbsp;&nbsp;&nbsp;After the paper is graded  (grade event):</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#info-pages-public-views-and-private-annotations" id="id14">4.2&nbsp;&nbsp;&nbsp;Info pages: public views and private annotations</a><ul class="auto-toc">
+<li><a class="reference internal" href="#initial-state" id="id15">4.2.1&nbsp;&nbsp;&nbsp;Initial state</a></li>
+<li><a class="reference internal" href="#after-b-adds-annotation" id="id16">4.2.2&nbsp;&nbsp;&nbsp;After B adds annotation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#discussion" id="id17">5&nbsp;&nbsp;&nbsp;Discussion</a></li>
+<li><a class="reference internal" href="#bells-and-whistles" id="id18">6&nbsp;&nbsp;&nbsp;Bells and Whistles</a></li>
+<li><a class="reference internal" href="#summary" id="id19">7&nbsp;&nbsp;&nbsp;Summary</a></li>
+<li><a class="reference internal" href="#implementation-ideas" id="id20">8&nbsp;&nbsp;&nbsp;Implementation ideas</a><ul class="auto-toc">
+<li><a class="reference internal" href="#dsl-for-workflow" id="id21">8.1&nbsp;&nbsp;&nbsp;DSL for workflow</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#todo" id="id22">9&nbsp;&nbsp;&nbsp;Todo</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id1" id="id23">9.1&nbsp;&nbsp;&nbsp;Examples</a></li>
+<li><a class="reference internal" href="#specification-of-view-dynamics" id="id24">9.2&nbsp;&nbsp;&nbsp;Specification of view dynamics</a></li>
+<li><a class="reference internal" href="#extending-the-model" id="id25">9.3&nbsp;&nbsp;&nbsp;Extending the model</a></li>
+<li><a class="reference internal" href="#comparison-with-pantoto-implementation" id="id26">9.4&nbsp;&nbsp;&nbsp;Comparison with Pantoto implementation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id2">1&nbsp;&nbsp;&nbsp;Introduction</a></h1>
+<div class="section" id="motivation-and-objective">
+<h2><a class="toc-backref" href="#id3">1.1&nbsp;&nbsp;&nbsp;Motivation and objective</a></h2>
+<p>We propose a model for pantoto core.  The motivation for
+this exercise is to understand abstractly the essence of
+Pantoto's design.  The model described here, however, is
+self contained and independently developed.  While
+selectively borrowing elements of Pantoto's architecture, it
+is unencumbered by the compulsions of Pantoto's current
+design.</p>
+</div>
+<div class="section" id="core-elements">
+<h2><a class="toc-backref" href="#id4">1.2&nbsp;&nbsp;&nbsp;Core Elements</a></h2>
+<p>Core pantoto consists of three primary entities together
+referred to as the <strong>system</strong>: users, fields and pagelets.
+Users have state.  Fields have content.  Pagelets have
+views.  The view depends on the user viewing the pagelet and
+that user's state.  A user's view of a pagelet consists of a
+subset of fields and their permissions, ie., whether they
+are readable and/or writable.</p>
+<p>Here is a simple example to ground some of the terminology
+and further motivate the model.  The example is developed in
+detail later in the document.  An examination process
+consists of two users: the student and the teacher.  At any
+given time, the student is in one of the following possible
+states: ready to take the exam, writing the exam, finished
+taking the exam.  The examination paper is a pagelet that
+starts off with a view consisting of one field, the
+question, visible to both the teacher and the student.  When
+the student receives the examination paper, the view changes
+to include the student's answer field.  This field is
+writable by the student, readable-only by the teacher.  When
+the student is done with the examination paper, the view
+changes to make the answer field read-only for the student
+as well.</p>
+</div>
+<div class="section" id="work-flow-driven-evolution-of-pagelet-views">
+<h2><a class="toc-backref" href="#id5">1.3&nbsp;&nbsp;&nbsp;Work flow driven evolution of pagelet views</a></h2>
+<p>The <strong>workflow</strong> of the system specifies how the states of
+the users evolve based on <strong>events</strong>.  Events are atomic and
+instantaneous and cause the users' state to change.  E.g., a
+student in ready state, upon receiving the exam question
+paper from the teacher (a 'paper' event), begins writing the
+answer, i.e, transitions to a 'writing' state.  Events could
+be synchronised (as in a hand shake) or autonomous,
+involving only a single user.  (These latter type of events
+are often referred to as hidden transitions.)  We use
+Milner's CCS equations to describe workflows as processes.</p>
+<p>The <strong>process state</strong> of the system at any given instant
+consists of the set of users and their states with respect
+to the system workflow.  For example, the workflow in the
+previous example proceeds through the following process
+states:</p>
+<pre class="literal-block">
+(s_ready, t_ready)     --receive-paper--&gt;
+(s_writing, t_waiting) --submit--&gt;
+(s_waiting, t_grading) --grade--&gt;
+(s_done, t_done)
+</pre>
+<p>The set of fields and their content define the <strong>content
+state</strong> state of the system.  The <strong>view state</strong> of the
+system at any instance is the set of pagelets and their
+views.  Workflow events potentially effect changes in the
+view state of the system.</p>
+<p>Fields exist independent of pagelets, although they need to
+be attached to a pagelet to be viewed.  A field may be
+attached to multiple pagelets.  E.g., the question field may
+be part of multiple exam papers delivered to multiple
+students.</p>
+<p>The <strong>trace</strong> of a system is sequence consists of a sequence
+of triples indexed by event occurrences.  Each triple
+consists of of the system's process state, its content state
+and the view state immediately after the occurrence of the
+event.</p>
+<p>The specification of a Pantoto core application consists of
+workflow specification along with rules on how the system's
+views change when events occur.  At this time, we do not
+have a formal way of specifying the rules.  Instead, we will
+illustrate several examples of system traces.</p>
+</div>
+</div>
+<div class="section" id="type-structure">
+<h1><a class="toc-backref" href="#id6">2&nbsp;&nbsp;&nbsp;Type structure</a></h1>
+<p>Core pantoto has the following TYPES:</p>
+<pre class="literal-block">
+User    : TYPE
+State   : TYPE
+Event   : TYPE
+Content : TYPE     ;; type of the content of fields
+Field   : TYPE
+Pagelet : TYPE
+Perm    : TYPE = {--, r-, -w, rw}
+</pre>
+<p>Content is the type of possible values in the content of
+fields.  In the examples, we use primitive types like
+booleans, strings, and numbers as part of Content.</p>
+</div>
+<div class="section" id="dynamics">
+<h1><a class="toc-backref" href="#id7">3&nbsp;&nbsp;&nbsp;Dynamics</a></h1>
+<p>The system is defined by the following three primary state
+variables:</p>
+<pre class="literal-block">
+users   : set[User]     ;; the set of users in the system
+fields  : set[Field]    ;; the set of fields in the system
+pagelets: set[Pagelet]  ;; the set of pagelets in the system
+</pre>
+<p>and the following secondary state variables</p>
+<pre class="literal-block">
+user-state    : users -&gt; State
+field-content : fields -&gt; Content
+pagelet-view  : pagelets -&gt; users -&gt; [fields -:&gt; Perm]
+</pre>
+<p>In pagelet-view, the -:&gt; indicates a partial function.  Each
+user sees a subset of the fields and their permissions.</p>
+</div>
+<div class="section" id="examples">
+<h1><a class="toc-backref" href="#id8">4&nbsp;&nbsp;&nbsp;Examples:</a></h1>
+<div class="section" id="exam-paper-and-grading">
+<h2><a class="toc-backref" href="#id9">4.1&nbsp;&nbsp;&nbsp;Exam paper and grading</a></h2>
+<p>There are two users s and t (student and teacher) and one
+exam paper pagelet p, which starts off with one field q, the
+question.  When the student receives the paper, it has an
+answer field a added to it.  Finally, when the student
+submits the paper to the teacher, p acquires a grade field,
+which is filled and returned to the student.  At each stage
+the workflow specifies the users, fields, pagelets and their
+views.</p>
+<pre class="literal-block">
+s_ready     = ?paper . s_writing    ;; receives paper, starts writing.
+s_writing   = !submit . s_waiting   ;; submits paper, waiting for grade.
+s_waiting   = ?grade . s_done       ;; receives grade, done.
+
+t_setting   = !paper . t_waiting    ;; hands over paper, waiting.
+t_waiting   = ?submit . t_grading   ;; receives paper, grading
+t_grading   = !grade . t_done       ;; hands over grade, done.
+
+
+s_ready | t_ready
+</pre>
+<p>The system starts off with a ready (but nervous) student and
+a teacher ready with the question.</p>
+<p>We now trace the evolution of the system's state variables,
+which change state at each event.  The following state variables
+are irrelevant to the discussion below and have therefore
+been omitted (although a complete description must include
+their values).</p>
+<div class="section" id="initial-state-of-the-system">
+<h3><a class="toc-backref" href="#id10">4.1.1&nbsp;&nbsp;&nbsp;Initial state of the system:</a></h3>
+<pre class="literal-block">
+users = {s, t}   ;; unchanged over the entire workflow.
+fields = {q}
+pagelets = {p}   ;; unchanged over the entire workflow.
+
+pagelet-view(p)   = {t : {q : rw}}
+</pre>
+<p>The teacher is still setting the question paper.  The
+student can't see the question paper at all.  The pagelet's
+view does not have a mapping for user <span class="code-inline">student</span>.</p>
+</div>
+<div class="section" id="after-student-receives-the-examination-paper-paper-event">
+<h3><a class="toc-backref" href="#id11">4.1.2&nbsp;&nbsp;&nbsp;After student receives the examination  paper (paper event):</a></h3>
+<pre class="literal-block">
+fields = {q, a}
+pagelet-view(p)   =
+ {s : {q : r-, a : rw},
+  t : {q : r-, a : --}}
+</pre>
+<p>The answer is visible (and writable) only to the student.
+The teacher knows that there is a field called answer, but
+can't see it.  (A different pagelet-view could allow him to
+view the answer as the student is writing it.  Yet another
+pagelet-view could render the field answer completely
+invisible to the teacher. )</p>
+</div>
+<div class="section" id="after-the-student-submits-the-paper-submit-event">
+<h3><a class="toc-backref" href="#id12">4.1.3&nbsp;&nbsp;&nbsp;After the student submits the paper (submit event):</a></h3>
+<pre class="literal-block">
+fields = {q, a, g}
+pagelet-view(p)   =
+ {s : {q : r-, a : r-},
+  t : {q : r-, a : r-, g: rw}}
+</pre>
+<p>The answer field of the student is no longer writable by the
+student.  The answer field is now visible but not writable
+by the teacher.  A grade field is added, but only the
+teacher can see and manipulate it.</p>
+</div>
+<div class="section" id="after-the-paper-is-graded-grade-event">
+<h3><a class="toc-backref" href="#id13">4.1.4&nbsp;&nbsp;&nbsp;After the paper is graded  (grade event):</a></h3>
+<pre class="literal-block">
+pagelet-view(p)   =
+  {s : {q : r-, a : r-, g: r-},
+   t : {q : r-, a : r-, g: r-}}
+</pre>
+<p>The grade once given is no longer editable, even by the teacher.</p>
+<p>The pagelet evolution could have been defined in the more
+&quot;traditional&quot; way, where all three fields of the pagelet are
+defined and visible from the beginning, but are selectively
+writable by the student or the teacher.  We illustrate this
+below.  Note that the workflow (control) specification is
+the same as before.</p>
+<p>Note that in the above simulation, we only tracked the
+changes in the view of the system: its users, fields,
+pagelets and the pagelet views.  We did not need keep track
+of the contents of the fields.</p>
+</div>
+</div>
+<div class="section" id="info-pages-public-views-and-private-annotations">
+<h2><a class="toc-backref" href="#id14">4.2&nbsp;&nbsp;&nbsp;Info pages: public views and private annotations</a></h2>
+<p>This example simulates an office intranet, with two users A
+and B.  The set of pagelets consists of one pagelet, which
+is A's info page.  It has 3 fields: his name, email, and
+mobile.  A has rw access to each of these fields.  Other
+intranet users have read access to these fields.  An
+external user C only knows about the name and
+email; she has no knowledge of the field called mobile.</p>
+<p>At the next event, B privately annotates A's info page.  His
+annotation is not visible to anyone else.</p>
+<p>The workflow dynamics of the info pages system is described
+by the following equation.</p>
+<pre class="literal-block">
+b = annotate . b
+
+a | b | c
+</pre>
+<div class="section" id="initial-state">
+<h3><a class="toc-backref" href="#id15">4.2.1&nbsp;&nbsp;&nbsp;Initial state</a></h3>
+<pre class="literal-block">
+users = {a,             ;; intranet user
+         b,             ;; intranet user
+         c}             ;; external user
+
+fields = {an, ae, am}   ;; a's name, email, mobile
+
+pagelets = {ai}         ;; a's info pagelet
+
+pagelet-view(ai) =
+  {a :  {an:rw, ae:rw, am:rw},
+   b :  {an:r-, ae:r-, am:r-},
+   c :  {an:r-, ae:r-}}
+</pre>
+</div>
+<div class="section" id="after-b-adds-annotation">
+<h3><a class="toc-backref" href="#id16">4.2.2&nbsp;&nbsp;&nbsp;After B adds annotation</a></h3>
+<p>The users and pagelets sets remain unchanged.  The updates
+on fields and pagelet-view is listed below:</p>
+<pre class="literal-block">
+fields = {an, ae, am, ba}             ;; B's private annotation added
+pagelet-view(ai) =
+  {a :  {an:rw, ae:rw, am:rw},
+   b :  {an:r-, ae:r-, am:r-, ba:rw}, ;; B's private annotation
+   c :  {an:r-, ae:r-}}               ;; is visible only to B
+</pre>
+</div>
+</div>
+</div>
+<div class="section" id="discussion">
+<h1><a class="toc-backref" href="#id17">5&nbsp;&nbsp;&nbsp;Discussion</a></h1>
+<p>It is tempting to draw an analogy between file permissions
+in a file system and field permissions in Pantoto core.
+Unlike in a file system, however, a user in Pantoto core is
+not endowed with read-write permissions on fields per se.
+Nor does the user 'own' a field or a pagelet.  Similarly,
+the concept of a user having a permission to add or delete a
+field from a pagelet is not supported in this model.
+Rather, a user's view of a pagelet, and thereby the
+read-write privileges on fields, is derived from that user's
+role and his state in a particular workflow.  In a real
+application, any given user is associated with multiple
+workflows.  Since fields are shared, a user may, at a given
+time, have different permissions on the same field, each set
+of permissions tied to a different workflow.  In the model
+described here, we do not invoke the concept of a role; that
+will be addressed in an extended model later.</p>
+</div>
+<div class="section" id="bells-and-whistles">
+<h1><a class="toc-backref" href="#id18">6&nbsp;&nbsp;&nbsp;Bells and Whistles</a></h1>
+<p>The system could support a predefined pagelet called
+PAGELETS which shows, for each user, pagelets that that user
+is allowed to see and modify.  For the sake of simplicity,
+this special pagelet has not been included in the examples.</p>
+</div>
+<div class="section" id="summary">
+<h1><a class="toc-backref" href="#id19">7&nbsp;&nbsp;&nbsp;Summary</a></h1>
+<p>The key points are summarised below:</p>
+<ul class="simple">
+<li>A system consists of users, fields and pagelets</li>
+<li>Users have state, governed by a system workflow</li>
+<li>Workflows drive the dynamics of pagelet views</li>
+</ul>
+</div>
+<div class="section" id="implementation-ideas">
+<h1><a class="toc-backref" href="#id20">8&nbsp;&nbsp;&nbsp;Implementation ideas</a></h1>
+<div class="section" id="dsl-for-workflow">
+<h2><a class="toc-backref" href="#id21">8.1&nbsp;&nbsp;&nbsp;DSL for workflow</a></h2>
+<p>The DSL specifies a workflow.  A syntax like that in the
+above examples could be a starting point.</p>
+<p>The DSL could either be interpreted or compiled into a set
+of functions, each of which corresponds to a transition.</p>
+<p>A set of users.  For each user there is a list of workflows
+that the user is currently part of.  For each workflow,
+there is a state that the user in relative to that workflow.</p>
+</div>
+</div>
+<div class="section" id="todo">
+<h1><a class="toc-backref" href="#id22">9&nbsp;&nbsp;&nbsp;Todo</a></h1>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id23">9.1&nbsp;&nbsp;&nbsp;Examples</a></h2>
+<p>Include more examples, ideally taken from some existing
+Pantoto based sites, or e-governance applications.</p>
+</div>
+<div class="section" id="specification-of-view-dynamics">
+<h2><a class="toc-backref" href="#id24">9.2&nbsp;&nbsp;&nbsp;Specification of view dynamics</a></h2>
+<p>Define a mini domain specific language to specify the
+pagelet view dynamics with respect to work flow events.</p>
+</div>
+<div class="section" id="extending-the-model">
+<h2><a class="toc-backref" href="#id25">9.3&nbsp;&nbsp;&nbsp;Extending the model</a></h2>
+<p>Include concept of category (this now seems like work flow),
+groups (roles?), and templates for agglomeration of fields.</p>
+</div>
+<div class="section" id="comparison-with-pantoto-implementation">
+<h2><a class="toc-backref" href="#id26">9.4&nbsp;&nbsp;&nbsp;Comparison with Pantoto implementation</a></h2>
+<p>Compare with current implementation.  This will help improve
+the model, and perhaps also the implementation.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Exam Workflow</title>
+<style type="text/css">
+
+/* Geometry */
+
+body { 
+	margin-left: 20%; 
+	margin-right: 25%; 
+	margin-top: 10%;
+        background: #ffffff; 
+        color: #444444;
+        font-family: Verdana, sans-serif; 
+        font-weight: normal;
+}
+
+.admonition-title {
+/*   display: none ; */
+ color: blue;
+ margin-left: 5%;
+}
+
+div.design-note {
+   border: solid;
+   font-size: small;
+   border-width: thin;
+   width: 100%;
+   background: "FFFF66";
+}
+
+span.code-inline {
+   color: green;
+   font-family: helvetica, monospace;
+   font-weight: bold;
+   font-size: small;
+}
+
+
+h1, h2, h3 { color: navy;}
+  margin-left: 3em;
+}
+
+
+div.section-title {
+   margin-top: 30%;
+   text-align: center;
+   line-height: 280%;
+/*   vertical-align: middle;*/
+}
+
+table {
+ border: thin solid silver;
+}
+
+/* Links */
+
+a:link {
+   text-decoration: none;
+   color: #996633; /* brown */
+}
+
+a:visited {
+   text-decoration: none;
+   color: #996633; /* brown */
+}
+
+a:hover {
+   text-decoration: none;
+   color: #cc9966; 
+}
+
+li {
+
+   padding: 5px;
+}
+
+table {
+ border: thin solid silver;
+}
+
+
+th {
+   padding: 1em;
+   background: #CCCC33;
+}
+
+td {
+   padding: 0.5em;
+   font-size: 75%;
+}
+
+.literal-block {
+   font-weight: bold;
+   font-size: small;
+   color: green;
+   font-family: monospace, fixed-width;
+
+}
+</style>
+</head>
+<body>
+<div class="document" id="exam-workflow">
+<h1 class="title">Exam Workflow</h1>
+
+<!-- The above is the document title -->
+<!-- -*- coding: utf-8 -*- -->
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title first">Table of Contents</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#defining-the-exam-workflow" id="id1">1&nbsp;&nbsp;&nbsp;Defining the exam workflow</a><ul class="auto-toc">
+<li><a class="reference internal" href="#users" id="id2">1.1&nbsp;&nbsp;&nbsp;Users</a></li>
+<li><a class="reference internal" href="#exam-workflow-specified-informally" id="id3">1.2&nbsp;&nbsp;&nbsp;Exam workflow specified informally</a></li>
+<li><a class="reference internal" href="#states" id="id4">1.3&nbsp;&nbsp;&nbsp;States</a></li>
+<li><a class="reference internal" href="#actions" id="id5">1.4&nbsp;&nbsp;&nbsp;Actions</a></li>
+<li><a class="reference internal" href="#pagelets-and-fields" id="id6">1.5&nbsp;&nbsp;&nbsp;Pagelets and Fields</a></li>
+<li><a class="reference internal" href="#defining-hooks-with-transitions" id="id7">1.6&nbsp;&nbsp;&nbsp;Defining hooks with transitions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#initializing-the-exam-work-flow" id="id8">2&nbsp;&nbsp;&nbsp;Initializing the exam work flow</a></li>
+<li><a class="reference internal" href="#running-the-exam-workflow" id="id9">3&nbsp;&nbsp;&nbsp;Running the exam workflow</a><ul class="auto-toc">
+<li><a class="reference internal" href="#listing-all-pagelets" id="id10">3.1&nbsp;&nbsp;&nbsp;Listing all pagelets</a></li>
+<li><a class="reference internal" href="#sending-and-getting-the-paper" id="id11">3.2&nbsp;&nbsp;&nbsp;Sending and getting the paper</a></li>
+<li><a class="reference internal" href="#attempt-to-change-the-question-by-the-teacher" id="id12">3.3&nbsp;&nbsp;&nbsp;Attempt to change the question by the teacher</a></li>
+<li><a class="reference internal" href="#student-answers-the-question" id="id13">3.4&nbsp;&nbsp;&nbsp;Student answers the question</a></li>
+<li><a class="reference internal" href="#student-finishes-the-exam" id="id14">3.5&nbsp;&nbsp;&nbsp;Student finishes the exam</a></li>
+<li><a class="reference internal" href="#student-tries-to-change-the-answer" id="id15">3.6&nbsp;&nbsp;&nbsp;Student tries to change the answer</a></li>
+<li><a class="reference internal" href="#teacher-gets-the-answer" id="id16">3.7&nbsp;&nbsp;&nbsp;Teacher gets the answer</a></li>
+<li><a class="reference internal" href="#teachers-sets-the-grade" id="id17">3.8&nbsp;&nbsp;&nbsp;Teachers sets the grade</a></li>
+<li><a class="reference internal" href="#teacher-sends-the-grade" id="id18">3.9&nbsp;&nbsp;&nbsp;Teacher sends the grade</a></li>
+<li><a class="reference internal" href="#student-receives-the-grade" id="id19">3.10&nbsp;&nbsp;&nbsp;Student receives the grade</a></li>
+<li><a class="reference internal" href="#actions-must-match-the-work-flow" id="id20">3.11&nbsp;&nbsp;&nbsp;Actions must match the work flow</a></li>
+<li><a class="reference internal" href="#listing-the-state-variables" id="id21">3.12&nbsp;&nbsp;&nbsp;Listing the state variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="defining-the-exam-workflow">
+<h1><a class="toc-backref" href="#id1">1&nbsp;&nbsp;&nbsp;Defining the exam workflow</a></h1>
+<p>The exam workflow, introduced in the pantoto core
+documentation and discussed in detail, is specified as a set
+of states, events, and transitions (moves).</p>
+<p>Each event is in terms of a send and receive action.  For
+example, the teacher sends the exam paper, and the student
+receives (or gets) the exam paper.  These two complementary
+events are sequential (the send precedes the receive) and
+asynchronous.  It's possible to define a different workflow
+in which the sends and receives are synchronous.</p>
+<div class="section" id="users">
+<h2><a class="toc-backref" href="#id2">1.1&nbsp;&nbsp;&nbsp;Users</a></h2>
+<pre class="literal-block">
+(define student (new-user 'student))
+(define teacher (new-user 'teacher))
+</pre>
+</div>
+<div class="section" id="exam-workflow-specified-informally">
+<h2><a class="toc-backref" href="#id3">1.2&nbsp;&nbsp;&nbsp;Exam workflow specified informally</a></h2>
+<p>The states, actions and transitions are captured by the
+following table each of whose rows has the format.</p>
+<pre class="literal-block">
+(move &lt;state&gt; &lt;action&gt; =&gt; &lt;next-state&gt;)
+</pre>
+<p>Each state name is a composite indicating the student's
+state (ready, writing, waiting, done) and the teacher's
+state (setting, waiting, grading, done).</p>
+<pre class="literal-block">
+; (move ready-setting   send-paper)     =&gt; ready-waiting
+; (move ready-waiting   get-paper)      =&gt; writing-waiting
+; (move writing-waiting send-answer)    =&gt; waiting-waiting
+; (move waiting-waiting get-answer)     =&gt; waiting-grading
+; (move waiting-grading send-grade)     =&gt; waiting-done
+; (move waiting-done    get-grade)      =&gt; done-done
+</pre>
+</div>
+<div class="section" id="states">
+<h2><a class="toc-backref" href="#id4">1.3&nbsp;&nbsp;&nbsp;States</a></h2>
+<pre class="literal-block">
+(define ready-setting   (new-state 'ready-setting))
+(define ready-waiting   (new-state 'ready-waiting))
+(define writing-waiting (new-state 'writing-waiting))
+(define waiting-waiting (new-state 'waiting-waiting))
+(define waiting-grading (new-state 'waiting-grading))
+(define waiting-done    (new-state 'waiting-done))
+(define done-done       (new-state 'done-done))
+
+(define *states*
+  (list
+    ready-setting
+    ready-waiting
+    writing-waiting
+    waiting-waiting
+    waiting-grading
+    waiting-done
+    done-done))
+</pre>
+</div>
+<div class="section" id="actions">
+<h2><a class="toc-backref" href="#id5">1.4&nbsp;&nbsp;&nbsp;Actions</a></h2>
+<pre class="literal-block">
+(define send-paper  (new-action 'send-paper))
+(define send-answer (new-action 'send-answer))
+(define send-grade  (new-action 'send-grade))
+
+(define get-paper   (new-action 'get-paper))
+(define get-answer  (new-action 'get-answer))
+(define get-grade   (new-action 'get-grade))
+
+(define *actions*
+  (list
+    send-paper
+    send-answer
+    send-grade
+
+    get-paper
+    get-answer
+    get-grade))
+</pre>
+</div>
+<div class="section" id="pagelets-and-fields">
+<h2><a class="toc-backref" href="#id6">1.5&nbsp;&nbsp;&nbsp;Pagelets and Fields</a></h2>
+<pre class="literal-block">
+(define paper  (new-pagelet 'paper))
+
+(define question (new-field 'question &quot;Mauritius capital?&quot;))
+(define answer  (new-field  'answer   &quot;blank&quot;))
+(define grade   (new-field  'grade    &quot;blank&quot;))
+</pre>
+</div>
+<div class="section" id="defining-hooks-with-transitions">
+<h2><a class="toc-backref" href="#id7">1.6&nbsp;&nbsp;&nbsp;Defining hooks with transitions</a></h2>
+<p>The <span class="code-inline">define-move</span> function constructs a move and the work
+flow with the new move.  Its syntax is</p>
+<pre class="literal-block">
+(define-move &lt;state&gt; &lt;action&gt; &lt;new-state&gt; &lt;hook&gt;)
+</pre>
+<p><span class="code-inline">hook</span> is a thunk (zero argument function)
+which can be used for doing anything.  Here the hook is used
+for updating the views of various pagelets in the system.
+It is also used for registering fields into the system's
+list of fields.</p>
+<pre class="literal-block">
+(define-move
+  ready-setting  send-paper ;; =&gt;
+  ready-waiting
+  (lambda ()
+    ;; update the teacher's view of the question to read-only
+    (update-field-view! teacher paper question ro)))
+
+(define-move
+  ready-waiting get-paper ;; =&gt;
+  writing-waiting
+  (lambda ()
+    (add-field! answer)
+
+    ;; student can (only) read  question
+    (update-field-view! student paper question ro)
+
+    ;; student can write into answer field
+    (update-field-view! student paper answer rw)))
+
+(define-move
+  writing-waiting send-answer ;; =&gt;
+  waiting-waiting
+  (lambda ()
+    ;; student done answering, answer field no longer writable
+    (update-field-view! student paper answer ro)))
+
+(define-move
+  waiting-waiting get-answer  ;; =&gt;
+  waiting-grading
+  (lambda ()
+    (add-field! grade)
+
+    ;; teacher receives answer which is read only
+    (update-field-view! teacher paper answer ro)
+
+    ;; The grade field is writable by the teacher
+    (update-field-view! teacher paper grade rw)))
+
+(define-move
+  waiting-grading send-grade ;; =&gt;
+  waiting-done
+  (lambda ()
+    ;; Teacher sends grade.  Grade field no longer writable.
+    (update-field-view! teacher paper grade ro)))
+
+
+(define-move
+  waiting-done get-grade  ;; =&gt;
+  done-done
+  (lambda ()
+
+    ;; Grade visible to student (read only)
+    (update-field-view! student paper grade ro)))
+</pre>
+<p><span class="code-inline">update-field-view!</span> updates the view <em>of</em> a field <em>in</em> a
+pagelet <em>for</em> a user.</p>
+</div>
+</div>
+<div class="section" id="initializing-the-exam-work-flow">
+<h1><a class="toc-backref" href="#id8">2&nbsp;&nbsp;&nbsp;Initializing the exam work flow</a></h1>
+<p>Initializing the work flow involves registering the users
+and pagelets and the fields into the workflow, setting the
+current state of the workflow, and initializing the view of
+pagelets.</p>
+<pre class="literal-block">
+(define start-workflow!
+  read-setting
+  (lambda ()
+    (add-user! student)
+    (add-user! teacher)
+    (add-pagelet! paper)
+    (add-field! question)
+    (update-field-view! teacher paper question rw)))
+</pre>
+</div>
+<div class="section" id="running-the-exam-workflow">
+<h1><a class="toc-backref" href="#id9">3&nbsp;&nbsp;&nbsp;Running the exam workflow</a></h1>
+<p>First, we start the scheme session in the exam directory and
+import the module main.ss.</p>
+<pre class="literal-block">
+Welcome to MzScheme v4.2 [3m], Copyright (c) 2004-2009 PLT Scheme Inc.
+&gt; (require &quot;main.ss&quot;)
+</pre>
+<div class="section" id="listing-all-pagelets">
+<h2><a class="toc-backref" href="#id10">3.1&nbsp;&nbsp;&nbsp;Listing all pagelets</a></h2>
+<p>At any instance, <span class="code-inline">(list-all)</span> lists all the fields of
+all pagelets for each user of the system.
+<span class="code-inline">(list-pager-for-user &lt;user&gt;)</span> lists all pagelets and
+their fields and views for a particular user.</p>
+<pre class="literal-block">
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+    ((pagelet: paper
+      fields:
+        ((name: question perm: &quot;rw&quot; content: &quot;Mauritius capital?&quot;)))))
+ (user: student pagelets: ()))
+</pre>
+<p>Initially, the system has two users.  The teacher is still
+in the process of setting the question paper.  That is
+indicated by the quesion field being rw.</p>
+</div>
+<div class="section" id="sending-and-getting-the-paper">
+<h2><a class="toc-backref" href="#id11">3.2&nbsp;&nbsp;&nbsp;Sending and getting the paper</a></h2>
+<p>The paper is next sent using the <span class="code-inline">send-paper</span> event.
+The send and receive are asynchronous.  So there is a
+<span class="code-inline">get-paper</span> event to match the send.</p>
+<pre class="literal-block">
+&gt; (next-state send-paper)
+&gt; (next-state get-paper)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;rw&quot; content: &quot;blank&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+<p>In the teacher's view, the paper only contains the question,
+now read-only.  The student's view of the paper has an
+additional field, the answer.  The student writes the answer
+in the writable answer field.</p>
+</div>
+<div class="section" id="attempt-to-change-the-question-by-the-teacher">
+<h2><a class="toc-backref" href="#id12">3.3&nbsp;&nbsp;&nbsp;Attempt to change the question by the teacher</a></h2>
+<p>The teacher has second thoughts on the question and tries to
+change the question, but fails.</p>
+<pre class="literal-block">
+&gt; (set-content! teacher paper question &quot;Sri Lanka capital?&quot;)
+set-content!: field question of pagelet paper is visible to user teacher
+but is not writable
+</pre>
+<p>Notice that <span class="code-inline">set-content!</span> of a field to a new content
+value is invoked in the context of a user and a pagelet.
+The assumption here is that both the pagelet paper is
+available to the user and the question field is available
+and writable to the paper pagelet.  If not the system issues
+an error (not shown).</p>
+</div>
+<div class="section" id="student-answers-the-question">
+<h2><a class="toc-backref" href="#id13">3.4&nbsp;&nbsp;&nbsp;Student answers the question</a></h2>
+<p>The students answers the question by setting the content of the answer field.</p>
+<pre class="literal-block">
+&gt; (set-content! student paper answer &quot;St. Louis&quot;)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;rw&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+<p>The student isn't finished with writing the answer yet, so
+the answer field is still writable.</p>
+</div>
+<div class="section" id="student-finishes-the-exam">
+<h2><a class="toc-backref" href="#id14">3.5&nbsp;&nbsp;&nbsp;Student finishes the exam</a></h2>
+<p>The student finishes the exam.  This is indicated in the
+workflow by calling the <span class="code-inline">next-state</span> function with the
+action <span class="code-inline">send-answer</span>.</p>
+<p>The answer field is no longer writable.</p>
+<pre class="literal-block">
+&gt; (next-state send-answer)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+</div>
+<div class="section" id="student-tries-to-change-the-answer">
+<h2><a class="toc-backref" href="#id15">3.6&nbsp;&nbsp;&nbsp;Student tries to change the answer</a></h2>
+<p>As soon as the student submits the answer, he remembers that
+the correct answer is <em>Port Louis</em>, not St. Louis.  He tries
+to change it, but it's too late.</p>
+<pre class="literal-block">
+&gt; (set-content! student paper answer &quot;Port Louis&quot;)
+set-content!: field answer of pagelet paper is visible
+to user student but is not writable
+</pre>
+</div>
+<div class="section" id="teacher-gets-the-answer">
+<h2><a class="toc-backref" href="#id16">3.7&nbsp;&nbsp;&nbsp;Teacher gets the answer</a></h2>
+<p>At this point the teacher sees the student's answer.  Aa
+grade field initialized to <em>blank</em> also appears in the
+teacher's view of the paper.</p>
+<pre class="literal-block">
+&gt; (next-state get-answer)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)
+     (name: grade perm: &quot;rw&quot; content: &quot;blank&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+</div>
+<div class="section" id="teachers-sets-the-grade">
+<h2><a class="toc-backref" href="#id17">3.8&nbsp;&nbsp;&nbsp;Teachers sets the grade</a></h2>
+<p>The teacher sets the grade (to &quot;F&quot;).  This is reflected in
+the new content of the grade field.</p>
+<pre class="literal-block">
+&gt; (set-content! teacher paper grade &quot;F&quot;)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)
+     (name: grade perm: &quot;rw&quot; content: &quot;F&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+</div>
+<div class="section" id="teacher-sends-the-grade">
+<h2><a class="toc-backref" href="#id18">3.9&nbsp;&nbsp;&nbsp;Teacher sends the grade</a></h2>
+<p>As soon as the teacher sends the grade, the grade field is no longer writable.</p>
+<pre class="literal-block">
+&gt; (next-state send-grade)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)
+     (name: grade perm: &quot;r-&quot; content: &quot;F&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;))))))
+</pre>
+</div>
+<div class="section" id="student-receives-the-grade">
+<h2><a class="toc-backref" href="#id19">3.10&nbsp;&nbsp;&nbsp;Student receives the grade</a></h2>
+<p>After the <span class="code-inline">get-grade</span> action, the student can view his grade.</p>
+<pre class="literal-block">
+&gt; (next-state get-grade)
+&gt; (list-all)
+((user:
+  teacher
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)
+     (name: grade perm: &quot;r-&quot; content: &quot;F&quot;)))))
+ (user:
+  student
+  pagelets:
+  ((pagelet:
+    paper
+    fields:
+    ((name: answer perm: &quot;r-&quot; content: &quot;St. Louis&quot;)
+     (name: question perm: &quot;r-&quot; content: &quot;Mauritius capital?&quot;)
+     (name: grade perm: &quot;r-&quot; content: &quot;F&quot;))))))
+</pre>
+</div>
+<div class="section" id="actions-must-match-the-work-flow">
+<h2><a class="toc-backref" href="#id20">3.11&nbsp;&nbsp;&nbsp;Actions must match the work flow</a></h2>
+<p>At this point, current state of the system is
+<span class="code-inline">done-done</span>.  Another call to change to the next state
+on the <span class="code-inline">send-answer</span> action results in an exception
+because this transition (or any other) from the
+<span class="code-inline">done-done state</span> is not defined as part of the
+workflow.</p>
+<pre class="literal-block">
+&gt; (next-state send-answer)
+next-state: no transition from  state done-done on action send-answer
+</pre>
+</div>
+<div class="section" id="listing-the-state-variables">
+<h2><a class="toc-backref" href="#id21">3.12&nbsp;&nbsp;&nbsp;Listing the state variables</a></h2>
+<p>The names of users, pagelets and fields in the system can be
+listed.</p>
+<pre class="literal-block">
+&gt; (user-names)
+(teacher student)
+&gt; (pagelet-names)
+(paper)
+&gt; (field-names)
+(grade answer question)
+&gt; (state-name *current-state*)
+done-done
+</pre>
+</div>
+</div>
+</div>
+</body>
+</html>

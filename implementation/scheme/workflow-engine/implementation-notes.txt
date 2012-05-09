@@ -1,0 +1,53 @@
+==================================
+Pantoto core implementation notes
+==================================
+
+
+.. The above is the document title
+
+.. -*- coding: utf-8 -*-
+
+.. section-numbering::
+
+
+.. role:: ci
+   :class: code-inline
+
+
+
+
+User specific interaction
+--------------------------
+
+All user interface functions should be invoked with respect
+to a user.  Currently, the update and the list functions do
+this, but not list-all.  List-all should be available to a
+special user called admin.  
+
+
+Work flow actions should include user
+-------------------------------------
+
+There is no notion of a user invoking actively (via a send)
+or passively (via a get) an action.  The next-state function
+information should also be user specific and must carry user
+as the first parameter.
+
+
+Allow fields and pagelets to be created as part of hooks
+--------------------------------------------------------
+
+Currently, pagelets and fields may be registered within
+hooks, but they need to be  created in the initialization.
+
+
+This is only because Scheme will let you create a top-level
+binding only at the top level.  It's not a serious
+limitation since the only reason we want to have top level
+bindings is because it becomes easier to refer to fields via
+Scheme identifiers.  There is no need to have a table of
+field name keys that map to fields.  Ditto for pagelets.
+
+
+
+
