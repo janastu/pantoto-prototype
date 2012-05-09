@@ -1,0 +1,129 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block heading %} <img src='/static/base/images/Settings.png' alt='{{title}}' class='mid_align' /> {{title}} {% endblock %}
+
+{% block extrahead %}
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $('#id_change').change(change_changed);
+            change_changed();
+        });
+        function change_changed(){
+            if( $('#id_change').val() == "user"){
+                $('#id_change_user').show();
+                $('#id_change_persona').hide();
+            }
+            else{
+                $('#id_change_user').hide();
+                $('#id_change_persona').show();
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block  subcontent %}
+
+    <br class='clear' />
+    <p> <label>Current Site : </label> <strong>{{site.name}} </strong> </p> <br/>
+    <p> 
+        <select id='id_change'>
+            <option value='user'> Change for user </option>
+            <option value='persona'> Change for persona </option>
+        </select>
+    </p> 
+    <br/>
+    <div id='id_change_user'>
+
+    <h3> Change site for current user ( {{user.username}} ): </h3>
+    <form action='' method='post'>
+        {% csrf_token %}
+        <p>
+            <label> Site: </label> <br/>
+            <select name='site'>
+            {% for site in sites %}
+                    <option value="{{site|first}}">{{site|last}}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <br class='clear' />
+        <p>
+            <label> Site Theme: </label> <br/>
+            <select name='site_theme'>
+            {% for theme in site_themes %}
+                    <option value="{{theme|first}}">{{theme|last}}</option>
+            {% endfor %}
+            </select>
+            <span>
+        </p>
+        <br class='clear' />
+        <p>
+            <label> Admin Theme: </label> <br/>
+            <select name='admin_theme'>
+            {% for theme in admin_themes %}
+                    <option value="{{theme|first}}">{{theme|last}}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <br class='clear' />
+        <p>
+            &nbsp;&nbsp;<input type='submit' value='Change' />
+        </p>
+    </form>
+    </div>
+
+    <br class='clear' />
+
+    <div id='id_change_persona'>
+
+    <h3> Change site for a persona:  </h3>
+    <form action='' method='post'>
+        {% csrf_token %}
+        <p>
+            <label> Personas: </label> <br/>
+            <select name='personas' multiple>
+            {% for persona in personas %}
+                    <option value="{{persona|first}}">{{persona|last}}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <br class='clear' />
+
+        <p>
+            <label> Site: </label> <br/>
+            <select name='site'>
+            {% for site in sites %}
+                    <option value="{{site|first}}">{{site|last}}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <br class='clear' />
+        <p>
+            <label> Site Theme: </label> <br/>
+            <select name='site_theme'>
+            {% for theme in site_themes %}
+                    <option value="{{theme|first}}">{{theme|last}}</option>
+            {% endfor %}
+            </select>
+            <span>
+        </p>
+        <br class='clear' />
+        <p>
+            <label> Admin Theme: </label> <br/>
+            <select name='admin_theme'>
+            {% for theme in admin_themes %}
+                    <option value="{{theme|first}}">{{theme|last}}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <br class='clear' />
+        <p>
+            &nbsp;&nbsp;<input type='submit' value='Change' />
+        </p>
+
+   </form>
+
+    </div>
+
+{% endblock %}

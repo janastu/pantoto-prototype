@@ -1,0 +1,16 @@
+# This file logs all the changes done by pantoto team .. which is useful in upgradation of mongoengine 
+# date author file change
+
+30/07/10    Prashanth   base.py     Added help_text argument to BaseFile class __init__ method
+30/07/10    Prashanth   fields.py   Added SlugField  
+31/07/10    Prashanth   base.py     choices validate method changed  
+31/07/10    Prashanth   auth.py     Removed User model and imported pantoto User model  
+01/08/10    Prashanth   base.py     Added label argument to BaseFile class __init__ method
+01/08/10    Prashanth   fields.py   Added TextField  
+01/08/10    Prashanth   base.py     Added editable argument to BaseFile class __init__ method
+01/08/10    Prashanth   fields.py   Added PasswordField  
+01/08/10    Prashanth   fields.py   Added Custom validation for ReferenceField  
+01/08/10    Prashanth   base.py     Added get_type method  
+01/08/10    Prashanth   fields.py    Called to_bool method in boolean validation
+
+

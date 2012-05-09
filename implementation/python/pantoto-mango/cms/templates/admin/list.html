@@ -1,0 +1,106 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block heading %} <img src='/static/base/images/{{model}}.png' alt='{{title}}' class='mid_align' /> {{title}} {% endblock %}
+
+{% if includes %}
+    {% block extrahead %}
+    {% autoescape off %}
+        {{includes}}
+    {% endautoescape %}
+    <!--
+    <link type='text/css' rel='stylesheet' href='/static/base/js/tablesorter/blue/style.css' />
+    <script type="text/javascript" src="/static/base/js/tablesorter/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/static/base/js/tablesorter/jquery.tablesorter.pager.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() { 
+            $(".tablesorter").tablesorter();
+        }); 
+    </script>
+    -->
+    {% endblock %}
+{% endif %}
+
+{% block subcontent %}
+<br class="clear" />
+<select><option> Bulk Actions </option> <option> Delete </option> </select> &nbsp; <input type='button' value='Apply' class='middle_switch' />
+<div class="onecolumn">
+       <div class="header">
+            <span>{{title}}</span>
+            <div class="switch" >
+                <input type='button' value='Add New' class='left_switch' onclick='javascript:window.location="/admin/{{model}}/new/";' />
+            </div>
+       </div>
+        <br class="clear"/>
+        <div class="content">
+        {% if objs %}
+            <table id="list_table" width="100%" class='data'>
+                <thead>
+                <tr>
+                    <th >
+                        <span style='padding-left:4px;'><input type="checkbox" id="check_all" name="check_all"/></span>
+                    </th>
+                    {% for col in cols %}
+                    <th >{{col}}</th>
+                    {% endfor %}
+                    <th> Actions </th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% ifequal model "category" %}
+
+                {% for row in objs %} 
+                     <tr id="{{row|first|first}}" {% ifequal row|first|last "None" %} {% else %} class="child-of-{{row|first|last}}" {% endifequal %}> 
+                     <td >
+                        <input type="checkbox"/>
+                     </td>
+
+                    {% autoescape off %}
+
+                    {% for cell in row|last %}
+                    <td> {{cell}} </td> 
+                     {% endfor %}
+
+                    {% endautoescape %}
+
+                     </tr>
+                {% endfor %}
+
+
+                {% else %}
+                 {% for row in objs %} 
+                    <tr>
+                     <td>
+                        <input type="checkbox"/>
+                     </td>
+
+                    {% autoescape off %}
+
+                    {% for cell in row %}
+                    <td> {{cell}} </td> 
+                     {% endfor %}
+
+                    {% endautoescape %}
+
+                     </tr>
+                {% endfor %}
+
+                {% endifequal %}
+                </tbody>
+                           </table>
+            {% else %}
+               <br class="clear"/>
+                <div class="alert_info">
+                    <p>
+
+                        <img src="/static/base/images/icon_info.png" alt="info" class="mid_align"/>
+                        No {{model}} found.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+</div>
+
+{% endblock %}

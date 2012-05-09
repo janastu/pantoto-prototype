@@ -1,0 +1,53 @@
+{% extends site_base %}
+
+{% block extrahead %}
+   <link href="/static/base/images/favicon.ico" rel="icon" type="image/x-icon" />
+   <link href="/static/base/css/site.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="/static/base/js/jquery.js"></script>
+{% endblock %}
+
+{% block title %} {{site.name}} | Home | Pantoto {% endblock %}
+
+{% block accountinfo %}
+    <img src="/static/base/images/icon_online.png" alt="Online" class="mid_align"/>
+    Howdy, <a href="/admin/user/{{user.id}}/">{{user.get_full_name}}</a> | <a href="/admin/">Dashboard</a> | <a href="/auth/logout/?next=/">Logout</a>
+{% endblock %}
+
+{% block heading %} {{site.name}} {% endblock %}
+
+{% block description %} {{site.description}} {% endblock %}
+
+{% block menu %}
+<ul>
+    {% load site_tags %}
+    {% display_site_menu site user request.path %}
+</ul>
+{% endblock %}
+
+
+{% block maincontent %}
+    {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}" {% else %} class="alert_success" {% endif %} >
+           <p>
+            <img src="/static/base/images/icon_{{message.tags}}.png" alt="success" class="mid_align"/>
+           {{message}}.
+           </p>
+         </div>
+        {% endfor %}
+    {% endif %}
+
+
+	<a href="/accessibility/">Accessibility tools</a>
+
+
+    {% block content %}
+
+    {% endblock %}
+{% endblock %}
+
+{% block footer %}
+    Copyright &copy; 2010 {{site.name}} | Powered by Pantoto
+{% endblock %}
+

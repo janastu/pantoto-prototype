@@ -1,0 +1,32 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block heading %} <img src='/static/base/images/{{model}}.png' alt='{{title}}' class='mid_align' /> {{title}} {% endblock %}
+
+{% if includes %}
+    {% block extrahead %}
+    {% autoescape off %}
+        {{includes}}
+    {% endautoescape %}
+    {% endblock %}
+{% endif %}
+
+{% block subcontent %}
+    <br class="clear" />
+    <div class="onecolumn" style='width:100%;'>
+       <div class="header">
+          <span>
+          {% if add %}
+            <img src='/static/base/images/icon_add.png' alt='Add' class='mid_align' /> {{title}}
+          {% else %}
+            <img src='/static/base/images/icon_edit.png' alt='Edit' class='mid_align' /> {{title}}
+          {% endif %}
+          </span>
+       </div>
+       <br class="clear"/>
+       <div class="content">
+            {% include 'admin/includes/show_form.html' %}
+       </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+.zoomIn {
+  font-size: x-large;
+}
+
+.highlight {
+  background-color: yellow;
+}
+
+.red {
+  color :red;
+}
+
+.highlight_click {
+  background-color: lightgrey;
+}

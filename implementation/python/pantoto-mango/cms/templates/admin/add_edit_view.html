@@ -1,0 +1,109 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block heading %} <img src='/static/base/images/view.png' alt='{{title}}' class='mid_align' /> {{title}} {% endblock %}
+
+{% block extrahead %}
+    <script type='text/javascript' src='/static/base/js/jquery.selectboxes.js'></script>
+    <script type='text/javascript' src='/static/base/js/admin/view.js'></script>
+    {% if not add %}
+    <script type='text/javascript'> get_fal('{{vid}}'); </script>
+    {% endif %}
+{% endblock %}
+
+{% block  subcontent %}
+    <br class="clear" />
+    <div class="onecolumn" style='width:100%;'>
+       <div class="header">
+          <span>
+          {% if add %}
+            <img src='/static/base/images/icon_add.png' alt='Add' class='mid_align' /> {{title}}
+          {% else %}
+            <img src='/static/base/images/icon_edit.png' alt='Edit' class='mid_align' /> {{title}}
+          {% endif %}
+          </span>
+       </div>
+       <br class="clear"/>
+       <div class="content">
+        {% if form.errors %}
+        <div class="alert_error">
+            <p>
+                <img src="/static/base/images/icon_error.png" alt="delete" class="mid_align">
+                Please correct the errors below.
+            </p>
+         </div>
+        {% endif %}
+        <form action="" method="post">
+        {% csrf_token %} <div>
+                <p style='padding-bottom:15px;'> <label> Name : </label> <br/>
+                    <input type='text' value='{{name}}' name='name' id='id_name' />
+                </p>
+                <p style='padding-bottom:15px;'> <label> Description : </label> <br/>
+                    <input type='text' value='{{description}}' name='description' id='id_description' />
+                </p>
+                <p style='padding-bottom:15px;'> <label> Fields : </label> <br/>
+                    <select name='fields' id='id__fields' multiple>
+                    {% autoescape off %}
+                    {% for field in fields %}
+                        {% if add %}
+                            <option value='{{field|first}}'>[{{field|first}}] {{field|last}} </option>
+                        {% else %}
+                            {{field}}
+                        {% endif %}
+                    {% endfor %}
+                    {% endautoescape %}
+                    </select>
+                </p>
+       </div>
+
+        <div id="threecolumn" class="threecolumn" >
+            <div class="threecolumn_each" style='width:100%;'>
+                <div class="header">
+                    <span>Permissions</span>
+                </div>
+                <div class="content">
+                    <div class="twocolumn">
+                        <div class="column_left">
+                            <div class="header">
+                                <span>Selected Fields</span>
+                            </div>
+                            <br class="clear"/>
+                            <div class="content">
+                                <div id="sel_fields"> </div>
+                            </div>
+                         </div>
+                         <div class="column_right">
+                            <div class="header">
+                                <span>Selected Personas</span>
+                            </div>
+                            <br class="clear"/>
+                            <div class="content">
+                                    <p>
+                                    <select multiple id='id_personas' name='sel_personas'>
+                                        {% for persona in personas %}
+                                               <option value='{{persona|first}}'>[{{persona|first}}] {{persona|last}} </option>
+                                        {% endfor %}
+                                        </select>
+                                    </p>
+                                    <p> <label> Define Permissions: </label> <br/>
+                                    <div id='sel_personas'>
+
+                                    </div>
+                                    <p> <input type='button' value='<< Apply Permissions' onclick='apply_permissions()' /> </p>
+                                    </p>
+
+                            </div>
+                        </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        <br class='clear' />
+        <br class='clear' />
+        </form>
+    <input type='submit' value='{% if add %} Add {% else %} Update {% endif %} View' {% if add %} onclick='send_view(true);' {% else %} onclick='send_view(false,"{{vid}}");' {% endif %} />
+        </div>
+       </div>
+    </div>
+{% endblock %} 

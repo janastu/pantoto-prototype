@@ -1,0 +1,23 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} Order Fields {% endblock %}
+
+{% block heading %} {% endblock %}
+
+{% block extrahead %}
+<script type='text/javascript' src='/static/base/js/json2.js'> </script>
+<script type='text/javascript' src='/static/base/js/admin/order.js'> </script>
+{% endblock %}
+
+{% block subcontent %}
+
+<ul id='sort-list'>
+{% for field in fields %}
+        <li id='{{field|first}}'><img src="/static/base/images/icon_move.png" alt="move" width="16" height="16" class="handle mid_align" /><strong>{{field|last}}</strong></li>
+{% endfor %}
+</ul>
+
+<input type='button' onclick='javascript:send_order();' value='Update Order' />
+
+{% endblock %}
+

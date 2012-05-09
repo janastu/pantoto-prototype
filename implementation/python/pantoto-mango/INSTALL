@@ -1,0 +1,10 @@
+Thanks for downloading Pantoto.
+
+To run it, make sure you have
+
+    Python 2.4 or greater installed.
+    MongoDB 1.4 onwards
+    PyMongo Drivers 1.8.1 or greater.
+    Django 1.2 or greater
+
+For more detailed instructions, see docs/intro/install.txt.

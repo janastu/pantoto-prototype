@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+ 
+<!-- Website Title --> 
+<title> {% block title %} Welcome to Admin Bluez Theme {% endblock %}  </title>
+
+<!-- Meta data for SEO -->
+<meta name="description" content="{% block sitedescription %} {% endblock %}">
+<meta name="keywords" content="{% block keywords %} {% endblock %}">
+    
+
+{% block globalhead %}
+
+{% endblock %}
+
+{% with admin_theme.get_media_path as media %}
+
+    <!-- Template stylesheet -->
+    <link href="{{media}}/css/red/screen.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/css/red/datepicker.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/css/tipsy.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/js/visualize/visualize.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/js/jwysiwyg/jquery.wysiwyg.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/js/fancybox/jquery.fancybox-1.3.0.css" rel="stylesheet" type="text/css" media="all">
+    <link href="{{media}}/css/tipsy.css" rel="stylesheet" type="text/css" media="all">
+
+    <!--[if IE]>
+        <link href="{{media}}/css/ie.css" rel="stylesheet" type="text/css" media="all">
+        <script type="text/javascript" src="{{media}}/js/excanvas.js"></script>
+    <![endif]-->
+
+    <!-- Jquery plugins -->
+    <script type="text/javascript" src="{{media}}/js/jquery.img.preload.js"></script>
+    <script type="text/javascript" src="{{media}}/js/hint.js"></script>
+    <script type="text/javascript" src="{{media}}/js/visualize/jquery.visualize.js"></script>
+    <script type="text/javascript" src="{{media}}/js/jwysiwyg/jquery.wysiwyg.js"></script>
+    <script type="text/javascript" src="{{media}}/js/fancybox/jquery.fancybox-1.3.0.js"></script>
+    <script type="text/javascript" src="{{media}}/js/jquery.tipsy.js"></script>
+    <script type="text/javascript" src="{{media}}/js/custom_red.js"></script>
+
+
+{% block extrahead %}
+
+{% endblock %}
+
+</head>
+<body>
+<div class="content_wrapper">
+
+	<!-- Begin header -->
+	<div id="header">
+		<div id="logo">
+			{% block logo %}  <img src="{{media}}/images/logo.png" alt="logo"/> {% endblock %}
+		</div>
+		<div id="account_info">
+            {% block accountinfo %}
+			<img src="{{media}}/images/icon_online.png" alt="Online" class="mid_align"/>
+			Hello <a href="">Admin</a> (<a href="">1 new message</a>) | <a href="">Setting</a> | <a href="">Logout</a>
+            {% endblock %}
+		</div>
+	</div>
+	<!-- End header -->
+	
+	<!-- Begin left panel -->
+	<a href="javascript:;" id="show_menu">&raquo;</a>
+	<div id="left_menu">
+		<a href="javascript:;" id="hide_menu">&laquo;</a>
+		<ul id="main_menu">
+        {% block menu %}
+			<li><a href="login_blue.html"><img src="{{media}}/images/icon_home.png" alt="Home"/>Home</a></li>
+			<li>
+				<a id="menu_pages" href=""><img src="{{media}}/images/icon_pages.png" alt="Pages"/>Pages</a>
+				<ul>
+					<li><a href="">Add new Pages</a></li>
+					<li><a href="">Edit Pages</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href=""><img src="{{media}}/images/icon_posts.png" alt="Posts"/>Posts</a>
+				<ul>
+					<li><a href="">Add new Post</a></li>
+					<li><a href="">Edit Post</a></li>
+					<li><a href="">Delete Post</a></li>
+				</ul>	
+			</li>
+			<li>
+				<a href=""><img src="{{media}}/images/icon_media.png" alt="Media"/>Media</a>
+				<ul>
+					<li><a href="">Add new Media</a></li>
+					<li><a href="">Edit Media</a></li>
+					<li><a href="">Delete Media</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href=""><img src="{{media}}/images/icon_users.png" alt="Users"/>Users</a>
+				<ul>
+					<li><a href="">Add new Users</a></li>
+					<li><a href="">Edit Users</a></li>
+					<li><a href="">Delete Users</a></li>
+				</ul>	
+			</li>
+          {% endblock %}
+		</ul>
+		<br class="clear"/>
+		
+		<!-- Begin left panel calendar -->
+        <!--
+		<div id="calendar"></div>
+        -->
+		<!-- End left panel calendar -->
+		
+	</div>
+	<!-- End left panel -->
+	
+	
+	<!-- Begin content -->
+	<div id="content">
+		<div class="inner">
+			<h1>{% block heading %} Dashboard {% endblock %} </h1>
+            {% block contents %}
+			
+			<!-- Begin shortcut menu -->
+            <!--
+			<ul id="shortcut">
+    			<li>
+    			  <a href="modal_window.html" id="shortcut_home" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/home.png" alt="home"/><br/>
+				    <strong>Home</strong>
+				  </a>
+				</li>
+    			<li>
+    			  <a href="modal_window.html" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/calendar.png" alt="calendar"/><br/>
+				    <strong>Calendar</strong>
+				  </a>
+				</li>
+    			<li>
+    			  <a href="modal_window.html" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/stats.png" alt="stats"/><br/>
+				    <strong>Stats</strong>
+				  </a>
+				</li>
+				<li>
+    			  <a href="modal_window.html" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/setting.png" alt="setting"/><br/>
+				    <strong>Setting</strong>
+				  </a>
+				</li>
+				<li>
+    			  <a href="modal_window.html" id="shortcut_contacts" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/contacts.png" alt="contacts"/><br/>
+				    <strong>Contacts</strong>
+				  </a>
+				</li>
+				<li>
+    			  <a href="modal_window.html" id="shortcut_posts" title="Click me to open modal window">
+				    <img src="{{media}}/images/shortcut/posts.png" alt="posts"/><br/>
+				    <strong>Posts</strong>
+				  </a>
+				</li>
+  			</ul>
+            -->
+			<!-- End shortcut menu -->
+			
+			<!-- Begin shortcut notification -->
+            <!--
+			<div id="shortcut_notifications">
+				<span class="notification" rel="shortcut_home">10</span>
+				<span class="notification" rel="shortcut_contacts">5</span>
+				<span class="notification" rel="shortcut_posts">1</span>
+			</div>
+            -->
+			<!-- End shortcut noficaton -->
+			
+			
+			<br class="clear"/>
+
+			
+        {% endblock %}
+		<br class="clear"/><br class="clear"/>
+		
+		
+		<!-- Begin footer -->
+		<div id="footer">
+			{% block footer %} &copy; Copyright 2010 {{site.name}} {% endblock %}
+			<span class='footer_brand'> {% block footerbrand %} Powered By Pantoto {% endblock %} </span>
+		</div>
+		<!-- End footer -->
+		
+		
+	</div>
+	<!-- End content -->
+{% endwith %}
+</div>
+</body>
+</html>

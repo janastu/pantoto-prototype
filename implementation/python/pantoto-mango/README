@@ -1,0 +1,18 @@
+The Pantoto project was conceptualized to out perform existing CMS paradigms
+by assuming a community based approach - allowing users to create a web 
+presence and connect with their communities seamlessly and effortlessly. 
+The power of Pantoto lies in its architecture that makes it an easy and natural 
+tool to create collaborative communities.
+
+The project benefits small and medium enterprises and NGOs to manage their
+content without the apprehension of engaging with expensive technical support.
+
+This hosted project space references the latest development in Pantoto 
+implementations, the previous Java version being phased out. Built on Django,
+interfacing with MongoDB over the Mango framework, Pantoto is likely to be 
+highly extensible and has much learning to offer to contributors aside of the
+benefits to users.
+
+The core Pantoto team currently works out of Servelots, Bangalore, India.
+
+For more information, see https://code.google.com/p/pantoto-mango/w/list.

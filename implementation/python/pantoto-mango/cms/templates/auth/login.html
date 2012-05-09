@@ -1,0 +1,53 @@
+{% extends admin_login_base %}
+
+{% block title %} Login | {{site.name}} | Pantoto {% endblock %} 
+
+{% block messages %}
+{% if errors %}
+<div class="alert_error" style="width:350px;margin:auto;padding:auto;">
+    <p>
+        <img src="{{media}}/images/icon_error.png" alt="delete" class="mid_align">
+        {{errors}}
+    </p>
+</div>
+{% else %}
+{% endif %}
+{% endblock %}
+
+{% block logo %} <img src='{{site.get_logo_url}}' alt='Pantoto' class="mid_align" /> {{site.name}} Login {% endblock %}
+
+{% block contents %}
+<form action="" method="post" id="form_login" name="form_login">
+    {% csrf_token %}
+    <p>
+        <input type="text" id="username" name="username" style="width:285px" title="Username"/>
+    </p>
+    <p>
+        <div id="div1"><input name="pass_temp" type="text" value="Password" size="20" maxlength="20" style="width:285px" onfocus="changeBox()" />
+</div>
+<div id="div2" style="display:none"><input name="password" id="password" type="password" value="" size="20" maxlength="20" style="width:285px" onBlur="restoreBox()" />
+</div>
+    </p>
+    <p style="margin-top:40px">
+        <input type="submit" id="submit" name="submit" value="Login" class="Login" style="margin-right:5px"/>
+        <input type="checkbox" id="remember" name="remember"/>Remember my password
+    </p>
+     <input type="hidden" name="next" value="{{next}}" />
+</form>
+<script language="javascript">
+function changeBox() 
+{
+  document.getElementById('div1').style.display='none';
+  document.getElementById('div2').style.display='';
+  document.getElementById('password').focus();
+}
+function restoreBox() 
+{
+	if(document.getElementById('password').value=='')
+	{
+	  document.getElementById('div1').style.display='';
+	  document.getElementById('div2').style.display='none';
+	}
+}
+</script>
+{% endblock %}

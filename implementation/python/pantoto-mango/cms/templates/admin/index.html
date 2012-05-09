@@ -1,0 +1,125 @@
+{% extends admin_base %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block globalhead %}
+<link href="/static/base/css/admin.css" rel="stylesheet" type="text/css" media="all" />
+<link href="/static/base/images/favicon.ico" rel="shortcut icon" />
+<script type="text/javascript" src="/static/base/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/static/base/js/jquery-ui-1.8.custom.min.js"></script>
+<script type="text/javascript" src="/static/base/js/admin/admin.js"></script>
+{% endblock %}
+
+{% block logo %} 
+    <img src='{{site.get_logo_url}}' alt='Pantoto' class="mid_align" /> <span class='site_title'> {{site.name}} </span>
+    <span class="site_description"> {{site.description}} </span>
+{% endblock %}
+
+{% block accountinfo %}
+    <img src="/static/base/images/icon_online.png" alt="Online" class="mid_align"/>
+    Howdy, <a href="/admin/user/{{user.id}}/edit/">{{user.get_full_name}}</a> | &nbsp;
+    {% if user.get_message_count %} <a href='/admin/user/{{user.id}}/messages/' title="{{user.get_message_count}} message(s)" > 
+        <img src="/static/base/images/new_message.png" alt="New Message" class="mid_align" /> </a>  
+    {% else %} 
+        <a href='/admin/user/{{user.id}}/messages/' title="No messages" > <img src="/static/base/images/message.png" alt="New Message" class="mid_align" /> 
+        </a> 
+    {% endif %} | <a href="/auth/logout/?next=/admin/"><img src="/static/base/images/icon_logout.png" alt='Logout' class="mid_align" title='Logout' /> </a>
+{% endblock %}
+
+
+{% block heading %}  {{title}} {% endblock %}
+
+{% block menu %}
+    <li>
+            <a href="/admin/" ><img src="/static/base/images/icon_home.png" alt="Dashboard"/>Dashboard</a>
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_users.png" alt="Users"/>Users</a>
+                <ul>
+                    <li><a href="/admin/user/list/">Users</a></li>
+                    <li><a href="/admin/user/new/">Add New User</a></li>
+                </ul>   
+            </li>
+
+             <li>
+                <a href="" ><img src="/static/base/images/icon_personas.png" alt="Personas"/>Personas</a>
+                <ul>
+                    <li><a href="/admin/persona/list/">Personas</a></li>
+                    <li><a href="/admin/persona/new/">Add New Persona</a></li>
+                </ul>   
+            </li>
+
+             <li>
+                <a href="" ><img src="/static/base/images/icon_fields.png" alt="Fields"/>Fields</a>
+                <ul>
+                    <li><a href="/admin/field/list/">Fields</a></li>
+                    <li><a href="/admin/field/new/">Add New Field</a></li>
+                </ul>   
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_views.png" alt="Views"/>Views</a>
+                <ul>
+                    <li><a href="/admin/view/list/">Views</a></li>
+                    <li><a href="/admin/view/new/">Add New View</a></li>
+                </ul>   
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_pagelets.png" alt="Pagelets"/>Pagelets</a>
+                <ul>
+                    <li><a href="/admin/pagelet/list/">Pagelets</a></li>
+                    <li><a href="/admin/pagelet/new/">Add New Pagelet</a></li>
+                </ul>   
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_categories.png" alt="Categories"/>Categories</a>
+                <ul>
+                    <li><a href="/admin/category/list/">Categories</a></li>
+                    <li><a href="/admin/category/new/">Add New Category</a></li>
+                </ul>   
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_sites.png" alt="Sites"/>Sites</a>
+                <ul>
+                    <li><a href="/admin/site/list/">Sites</a></li>
+                    <li><a href="/admin/site/new/">Add New Site</a></li>
+                </ul>   
+            </li>
+ 
+            
+            <li>
+                <a href="" ><img src="/static/base/images/icon_media.png" alt="Media"/>Media</a>
+                <ul>
+                    <li><a href="/admin/file/list/">Files</a></li>
+                    <li><a href="/admin/file/new/">Upload File</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="" ><img src="/static/base/images/icon_settings.png" alt="Sites"/>Settings</a>
+                <ul>
+                    <li><a href="/admin/conf/change_site/">Change Site &amp; Theme</a></li>
+                    <li><a href="/auth/user/{{user.id}}/change_password/">Change Password</a></li>
+                </ul>   
+            </li>
+{% endblock %}
+
+{% block contents %}
+    {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}" {% else %} class="alert_success" {% endif %} >
+           <p>
+            <img src="/static/base/images/icon_{{message.tags}}.png" alt="success" class="mid_align"/>
+           {{message}}.
+           </p>
+         </div>
+        {% endfor %}
+    {% endif %}
+    {% block subcontent %}
+
+    {% endblock %}
+{% endblock %}

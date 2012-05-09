@@ -1,0 +1,107 @@
+
+a img {
+    border:none;
+}
+
+img
+{
+    border: 0;
+}
+
+img.mid_align
+{ 
+    vertical-align: middle;
+    margin-right: 5px;
+    border: 0;
+}
+
+/*
+    Alert box layout
+*/
+
+.alert_warning
+{
+    margin: auto;
+    padding: auto;
+    background: #fcf2a5;
+    border: 1px solid #edbf06;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 4px #cccccc;
+    -webkit-box-shadow: 0 1px 2px #cccccc;
+    box-shadow: 0 1px 2px #cccccc;
+    color: #333333;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+    text-shadow:0 0 0 transparent;
+}
+
+.alert_info
+{
+    margin: auto;
+    padding: auto;
+    background: #e6f5fd;
+    border: 1px solid #b2c8ff;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 4px #cccccc;
+    -webkit-box-shadow: 0 1px 2px #cccccc;
+    box-shadow: 0 1px 2px #cccccc;
+    color: #333333;
+    font-weight: bold;
+    cursor: pointer;
+    text-shadow:0 0 0 transparent;
+}
+
+.alert_success
+{   
+    margin: auto;
+    padding: auto;
+    background: #08A000;
+    border: 1px solid #49816e;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 4px #cccccc;
+    -webkit-box-shadow: 0 1px 2px #cccccc;
+    box-shadow: 0 1px 2px #cccccc;
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 1px 0 1px #333333;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+}
+
+.alert_error
+{   
+    margin: auto;
+    padding: auto;
+    background: #fb1800;
+    border: 1px solid #ff8e8e;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 4px #cccccc;
+    -webkit-box-shadow: 0 1px 2px #cccccc;
+    box-shadow: 0 1px 2px #cccccc;
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 1px 0 1px #333333;
+    margin: 10px 0 10px 0;
+}
+
+.alert_warning p, .alert_info p, .alert_success p, .alert_error p
+{
+    margin: 15px;
+}
+
+.noshadow
+{
+    -moz-box-shadow: 0 0 0 transparent;
+    -webkit-box-shadow: 0 0 0 transparent;
+    box-shadow: 0 0 0 transparent;
+}
+

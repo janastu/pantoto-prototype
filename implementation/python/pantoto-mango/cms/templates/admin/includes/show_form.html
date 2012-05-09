@@ -1,0 +1,50 @@
+{% if form.errors %}
+    <div class="alert_error">
+        <p>
+            <img src="/static/base/images/icon_error.png" alt="delete" class="mid_align">
+            Please correct the errors below.
+        </p>
+     </div>
+{% endif %}
+
+
+<form action="" name="frmaddedit" method="post" {% if upload %} enctype="multipart/form-data" {% endif %}>
+
+    {% csrf_token %}
+    {% for field in form %}
+        <p style='padding-bottom:15px;' id='id_row_{{field.name}}'>
+       {{field.label_tag}} &nbsp;  <i>{{field.help_text}}</i>  <br/>
+       <span style='float:left;'>{{field}} </span>
+        {% if field.errors %}
+            <span style='float:left;margin-left:15px;'>
+               <ul class='errorlist'> {% for error in field.errors %}  <li> {{error}} </li> {% endfor %} </ul>
+            </span>
+        {% endif %}
+        </p> <br class='clear'/>
+    {% endfor %}
+
+    <div id='id_extra_fields'>
+    </div>
+
+    <br class='clear' />
+</form>
+
+<div>
+<span class='left'> 
+    <input type='button' value='Save' onclick='javascript:document.frmaddedit.submit();' /> 
+</span>
+<span class='left'> 
+     <input type='button' value='Cancel'  onclick='javascript:return history.go(-1);'/> 
+</span>
+{% if buttons %}
+{% autoescape off %}
+    {% for button in buttons %}
+    <span class='left'> 
+        {{button}}
+    </span>
+    {% endfor %}
+{% endautoescape %}
+{% endif %}
+</div>
+<br class='clear' />
+

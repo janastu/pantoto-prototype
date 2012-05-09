@@ -1,0 +1,21 @@
+{% extends 'admin/index.html' %}
+
+{% block title %} {{title}} | {{site.name}} | Pantoto {% endblock %}
+
+{% block heading %} <img src='/static/base/images/{{model}}.png' alt='{{title}}' class='mid_align' /> {{title}} {% endblock %}
+
+{% block  subcontent %}
+    <br class="clear" />
+    <p>
+        <span class="quote">
+        <strong> Are you sure to delete {{model}} "{{obj}}" ? </strong>
+        <form action="" method="post" name='frmdelete'>
+        {% csrf_token %}
+        </form>
+        <br />
+        <input type='button' value='Yes' onclick='javascript:document.frmdelete.submit();' /> &nbsp;
+        <input type='button' value='No'  onclick='javascript:return history.go(-1);'/>
+        </span>
+    </p>
+{% endblock %}
+

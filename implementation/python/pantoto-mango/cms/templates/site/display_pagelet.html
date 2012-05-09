@@ -1,0 +1,30 @@
+{% extends 'site/index.html' %}
+
+{% block title %} Post Pagelet {% endblock %}
+
+{% block heading %} <img src='/static/base/images/post_pagelet.png' alt='Post Pagelet' class='mid_align' /> Post Pagelet {% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="/static/base/js/jwysiwyg/jquery.wysiwyg.css" />
+<script type="text/javascript" src="/static/base/js/admin/jquery.js"></script>
+<script type="text/javascript" src="/static/base/js/jwysiwyg/jquery.wysiwyg.js"></script>
+<script type="text/javascript" src="/static/base/js/admin/pagelet.js"></script>
+{% endblock %}
+
+{% block  content %}
+    <br class="clear" />
+    {% if form.fields %}
+    <div class="onecolumn" style='width:75%;'>
+       <div class="header">
+          <span>
+            <img src='/static/base/images/icon_edit.png' alt='Post' class='mid_align' /> {{form_title}} 
+          </span>
+       </div>
+       <br class="clear"/>
+       <div class="content">
+            {% include 'admin/includes/show_form.html' %}
+       </div>
+    </div>
+    {% endif %}
+{% endblock %}
+

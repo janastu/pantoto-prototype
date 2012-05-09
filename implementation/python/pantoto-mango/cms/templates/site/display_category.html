@@ -1,0 +1,23 @@
+{% extends 'site/index.html' %}
+
+{% block content %}
+
+    {% for pagelet in pagelets %}
+        <div class="post">
+                <h2 class="title"><a href="/pagelet/{{pagelet.slug}}/">{{pagelet.title}}</a></h2>
+                {% if pagelet.is_post %}
+                <p class="meta"><span class="date">September 10, 2009</span><span class="posted">Posted by <a href="#">Someone</a></span></p>
+                {% endif %}
+                <div style="clear: both;">&nbsp;</div>
+                <div class="entry">
+                    {% autoescape off %}
+                    <p>
+                    {{pagelet.description}}
+                    </p>
+                    {% endautoescape %}
+                    <p class="links"><a href="{{pagelet.get_absolute_url}}">Read More</a>&nbsp;&nbsp;&nbsp;&nbsp;{% if pagelet.is_post %} |&nbsp;&nbsp;&nbsp;&nbsp;<a href="#">Comments</a> {% endif %} </p>
+                </div>
+         </div>
+    {% endfor %}
+{% endblock %}
+

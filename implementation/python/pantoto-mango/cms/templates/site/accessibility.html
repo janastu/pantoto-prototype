@@ -1,0 +1,47 @@
+{% extends 'site/index.html' %}
+
+{% block title %} Accessibility tools {% endblock %}
+
+{% block heading %} Accessibility tools {% endblock %}
+
+{% block extrahead %}
+   <link href="/static/base/css/accessible.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="/static/base/js/jwysiwyg/jquery.wysiwyg.css" />
+<script type="text/javascript" src="/static/base/js/jquery.js"></script>
+<script type="text/javascript" src="/static/base/js/jwysiwyg/jquery.wysiwyg.js"></script>
+{% endblock %}
+
+
+{% block  content %}
+
+<fieldset><legend> Download web page</legend>
+	<form method="get" action="/accessibility/url">
+		Copy the url of your website here : <br/>
+		<input type="text" id="url_client" name="url_client" />
+		<input type="submit" name="submit_url" value="Submit" />
+	</form>
+</fieldset>
+
+<fieldset><legend>Apply accessibility theme</legend>
+	<div>
+		<a href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='/static/base/js/tts.js';var s=document.createElement('link');s.setAttribute('href','/static/base/css/accessible.css');s.setAttribute('rel','stylesheet');s.setAttribute('type','text/css');document.getElementsByTagName('head')[0].appendChild(s);})();">Apply accessibility design</a>
+	</div>
+
+	<div>
+		<button id="test" class="tts">
+		Select a text and<br/>click here for speech</button>
+
+		<p class="test"> This is the text associated with the button </p>
+		<p class="test"> This the rest of the text </p>
+
+	</div>
+
+	<div>
+		<h2 id="titre">Titre test</h2>
+		<p class="titre"> Ceci n'est pas une pipe </p>
+	</div>
+</fieldset>
+	
+
+
+{% endblock %}

@@ -1,0 +1,10 @@
+> Bulk Delete
+> List column sort
+> List Filters 
+> Search / Auto filter for multiselect box
+> Form generation : if field_order not defined make the same order as defined in the model
+> Cleanup view template and views ( Integrate to Pantoto )
+> Form Builder
+> On delete .. remove dependencies ( pagelet children,field.. views etc)
+> Post Pagelet.. readonly fields check before saving
+> get_object_or_404 in all views
