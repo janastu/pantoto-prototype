@@ -25,7 +25,6 @@ rr_rwa = Transition(ready_ready, send_paper, ready_waiting)
 update_field_view(teacher, paper, question, "ro")
 
 rwa_wrwa = Transition(ready_waiting, get_paper, writing_waiting)
-answer = Field("answer")
 add_field(answer) # add answer field to field set
 update_field_view(student, paper, question ,"ro")
 update_field_view(student, paper, answer ,"rw")
@@ -34,7 +33,6 @@ wrwa_wawa = Transition(writing_waiting, send_answer, waiting_waiting)
 update_field_view(student, paper, answer, "ro")
 
 wawa_wag = Transition(waiting_waiting, get_answer, waiting_grading)
-grade = Field("grade")
 add_field(grade)
 update_field_view(teacher, paper, answer, "ro")
 update_field_view(teacher, paper, grade, "rw")
